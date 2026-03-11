@@ -99,12 +99,15 @@ if 'error' in data:
 for part in data.get('candidates', [{}])[0].get('content', {}).get('parts', []):
     if 'inlineData' in part:
         img = base64.b64decode(part['inlineData']['data'])
-        mime = part['inlineData']['mimeType']
-        ext = 'png' if 'png' in mime else 'jpg'
+        # Detect actual format from magic bytes, not MIME (some providers lie)
+        if img[:4] == b'RIFF': ext = 'webp'
+        elif img[:4] == b'\x89PNG': ext = 'png'
+        elif img[:2] == b'\xff\xd8': ext = 'jpg'
+        else: ext = 'png'
         path = 'OUTPUT_PATH_HERE'
         with open(path, 'wb') as f:
             f.write(img)
-        print(f'Saved: {path} ({len(img)} bytes, {mime})')
+        print(f'Saved: {path} ({len(img)} bytes)')
     elif 'text' in part:
         print(f'Model: {part[\"text\"][:300]}')
 "
@@ -162,9 +165,15 @@ if 'error' in data:
 for part in data.get('candidates', [{}])[0].get('content', {}).get('parts', []):
     if 'inlineData' in part:
         img = base64.b64decode(part['inlineData']['data'])
-        with open('OUTPUT_PATH_HERE', 'wb') as f:
+        # Detect actual format from magic bytes, not MIME (some providers lie)
+        if img[:4] == b'RIFF': ext = 'webp'
+        elif img[:4] == b'\\x89PNG': ext = 'png'
+        elif img[:2] == b'\\xff\\xd8': ext = 'jpg'
+        else: ext = 'png'
+        path = f'OUTPUT_PATH_HERE.{ext}'
+        with open(path, 'wb') as f:
             f.write(img)
-        print(f'Saved: OUTPUT_PATH_HERE ({len(img)} bytes)')
+        print(f'Saved: {path} ({len(img)} bytes)')
     elif 'text' in part:
         print(f'Model: {part[\"text\"][:300]}')
 "
@@ -226,6 +235,22 @@ use the current working directory. Use short, descriptive filenames (e.g., `hero
 If it does, append a version suffix: `hero.jpg` → `hero-v2.jpg` → `hero-v3.jpg`, etc.
 Scan for existing versions to pick the next number. This applies to all generation and
 edit operations — every API call produces a new file.
+
+## Prompt Recording (MANDATORY)
+
+**ALWAYS save the prompt alongside every generated image.** For every image
+saved as `filename.png`, also save `filename.txt` containing:
+
+```
+model: <model ID used>
+aspect_ratio: <ratio>
+image_size: <size>
+
+<the exact prompt text sent to the API>
+```
+
+This is non-negotiable. Every image must have a corresponding prompt file so
+generations can be reproduced or iterated on later.
 
 ## Error Handling
 
