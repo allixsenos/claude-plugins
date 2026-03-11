@@ -7,6 +7,7 @@ A collection of [Agent Skills](https://docs.anthropic.com/en/docs/claude-code/sk
 | Skill | Description |
 |-------|-------------|
 | [nano-banana](skills/nano-banana/) | Generate and edit images using Gemini API (Nano Banana models) directly from Claude Code |
+| [openrouter-imagegen](skills/openrouter-imagegen/) | Generate and edit images via OpenRouter's unified API — one key, many models (Nano Banana, GPT-5 Image, FLUX.2, Riverflow, and more) |
 
 ## Installation
 
