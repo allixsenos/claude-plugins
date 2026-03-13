@@ -313,11 +313,41 @@ xdg-open output.png
 ## Output Location
 
 Save images where the user specifies. If no location is given, use the current
-working directory. Use short, descriptive filenames.
+working directory.
 
 **NEVER overwrite existing files.** Before writing, check if the target path
-exists. If it does, append a version suffix: `hero.jpg` -> `hero-v2.jpg` ->
-`hero-v3.jpg`. Scan for existing versions to pick the next number.
+exists. If it does, increment the version.
+
+## File Naming Convention
+
+All generated images and prompt files follow a strict naming scheme:
+
+**Images:** `descriptivename-v1-modelid.ext`
+**Prompts:** `prompt-descriptivename-v1-modelid.txt`
+
+Rules:
+- **Always start at v1.** Never create images without a version marker — iteration is expected.
+- **Include a model identifier** so outputs from different models are distinguishable at a glance. Use a short canonical name or abbreviation:
+  - `rf` or `riverflow` for Sourceful Riverflow
+  - `nb` for Nano Banana (Gemini image models)
+  - `flux` for FLUX models
+  - `gpt5` for OpenAI GPT-5 Image
+- **Prompt files are prefixed with `prompt-`** so they sort separately from images in file browsers.
+- When iterating, bump the version: `hero-v1-rf.webp` → `hero-v2-rf.webp`
+- When comparing models on the same prompt, keep the version and change the model id: `hero-v1-rf.webp`, `hero-v1-nb.jpg`, `hero-v1-flux.png`
+
+Examples:
+```
+hero-v1-rf.webp           # Riverflow, first attempt
+hero-v1-nb.jpg            # Nano Banana, first attempt
+hero-v1-flux.png          # FLUX, first attempt
+prompt-hero-v1-rf.txt     # Prompt for Riverflow v1
+prompt-hero-v1-nb.txt     # Prompt for Nano Banana v1
+hero-v2-rf.webp           # Riverflow, second iteration
+prompt-hero-v2-rf.txt     # Prompt for Riverflow v2
+```
+
+This way images sort together by name then version in Finder, and prompts sort separately at the top.
 
 ## Background Generation
 
@@ -331,7 +361,8 @@ When generating multiple images, launch all calls in parallel as separate backgr
 ## Prompt Recording (MANDATORY)
 
 **ALWAYS save the prompt alongside every generated image.** For every image
-saved as `filename.png`, also save `filename.txt` containing:
+saved as `descriptivename-v1-modelid.ext`, save `prompt-descriptivename-v1-modelid.txt`
+containing:
 
 ```
 model: <model ID used>
