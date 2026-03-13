@@ -227,19 +227,54 @@ xdg-open output.png
 
 ## Output Location
 
-Save generated images to the location the user specifies. If no location is given,
-use the current working directory. Use short, descriptive filenames (e.g., `hero.png`,
-`diagram-auth-flow.png`).
+Save images where the user specifies. If no location is given, use the current
+working directory.
 
-**NEVER overwrite existing files.** Before writing, check if the target path exists.
-If it does, append a version suffix: `hero.jpg` → `hero-v2.jpg` → `hero-v3.jpg`, etc.
-Scan for existing versions to pick the next number. This applies to all generation and
-edit operations — every API call produces a new file.
+**NEVER overwrite existing files.** Before writing, check if the target path
+exists. If it does, increment the version.
+
+## File Naming Convention
+
+All generated images and prompt files follow a strict naming scheme:
+
+**Images:** `descriptivename-v1-modelid.ext`
+**Prompts:** `prompt-descriptivename-v1-modelid.txt`
+
+Rules:
+- **Always start at v1.** Never create images without a version marker — iteration is expected.
+- **Include a model identifier** so outputs from different models are distinguishable at a glance. Use a short canonical name or abbreviation:
+  - `nb` for Nano Banana Pro (`gemini-3-pro-image-preview`)
+  - `nb-flash` for Nano Banana Flash (`gemini-2.5-flash-image`)
+  - `nb2` for Nano Banana 2 (`gemini-3.1-flash-image-preview`)
+- **Prompt files are prefixed with `prompt-`** so they sort separately from images in file browsers.
+- When iterating, bump the version: `hero-v1-nb.jpg` → `hero-v2-nb.jpg`
+- When comparing models on the same prompt, keep the version and change the model id: `hero-v1-nb.jpg`, `hero-v1-nb-flash.jpg`
+
+Examples:
+```
+hero-v1-nb.jpg            # Nano Banana Pro, first attempt
+hero-v1-nb-flash.jpg      # Nano Banana Flash, first attempt
+prompt-hero-v1-nb.txt     # Prompt for Nano Banana Pro v1
+hero-v2-nb.jpg            # Nano Banana Pro, second iteration
+prompt-hero-v2-nb.txt     # Prompt for Nano Banana Pro v2
+```
+
+This way images sort together by name then version in Finder, and prompts sort separately at the top.
+
+## Background Generation
+
+When generating images, always run the curl/python commands with `run_in_background: true`
+on the Bash tool. This prevents blocking the conversation while waiting for the API response
+(which can take 30-120 seconds per image). Save prompt `.txt` files immediately, then check
+results when the background task completes.
+
+When generating multiple images, launch all calls in parallel as separate background Bash commands.
 
 ## Prompt Recording (MANDATORY)
 
 **ALWAYS save the prompt alongside every generated image.** For every image
-saved as `filename.png`, also save `filename.txt` containing:
+saved as `descriptivename-v1-modelid.ext`, save `prompt-descriptivename-v1-modelid.txt`
+containing:
 
 ```
 model: <model ID used>
