@@ -1,6 +1,4 @@
 #!/bin/bash
-link="$HOME/.claude/redline-statusline.sh"
-if ! bash "$link" 2>/dev/null; then
-  target=$(ls -1t "$HOME/.claude/plugins/cache/allixsenos/redline"/*/scripts/statusline.sh 2>/dev/null | head -1)
-  [ -n "$target" ] && ln -sf "$target" "$link" && exec bash "$link"
-fi
+base="$HOME/.claude/plugins/cache/allixsenos/redline"
+target=$(ls -1d "$base"/*/scripts/statusline.sh 2>/dev/null | sort -t/ -k9 -V | tail -1)
+[ -n "$target" ] && exec bash "$target"
