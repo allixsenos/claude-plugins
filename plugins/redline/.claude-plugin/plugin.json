@@ -1,0 +1,10 @@
+{
+  "name": "redline",
+  "version": "1.0.0",
+  "description": "Configurable statusline with progress bars, git info, cost tracking, and PS1-style prompt",
+  "author": {
+    "name": "Luka Kladarić",
+    "url": "https://github.com/allixsenos"
+  },
+  "license": "MIT"
+}

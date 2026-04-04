@@ -1,0 +1,30 @@
+{
+  "name": "allixsenos",
+  "description": "Claude Code plugins and skills by Luka Kladarić",
+  "owner": {
+    "name": "allixsenos",
+    "url": "https://github.com/allixsenos"
+  },
+  "plugins": [
+    {
+      "name": "git-governor",
+      "source": "./plugins/git-governor",
+      "description": "Enforce git governance — block or prompt on amends, direct commits to protected branches, force pushes, destructive resets, and more"
+    },
+    {
+      "name": "redline",
+      "source": "./plugins/redline",
+      "description": "Configurable statusline with progress bars, git info, cost tracking, and PS1-style prompt"
+    },
+    {
+      "name": "nano-banana",
+      "source": "./plugins/nano-banana",
+      "description": "Generate and edit images using the Gemini API (Nano Banana models) directly from Claude Code"
+    },
+    {
+      "name": "openrouter-imagegen",
+      "source": "./plugins/openrouter-imagegen",
+      "description": "Generate and edit images using OpenRouter's unified API with runtime model discovery"
+    }
+  ]
+}

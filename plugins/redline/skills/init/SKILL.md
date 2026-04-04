@@ -1,0 +1,64 @@
+---
+name: init
+description: |
+  Initial setup for the redline statusline plugin. Use when the user says
+  /redline:init, "set up redline", or "install redline statusline". Creates
+  the wrapper script, symlink, and statusLine setting. Run once after install.
+---
+
+# Redline Setup
+
+Install the redline statusline by running these steps:
+
+## 1. Create the symlink to the current plugin version
+
+```bash
+target=$(ls -1t "$HOME/.claude/plugins/cache/allixsenos/redline"/*/scripts/statusline.sh 2>/dev/null | head -1)
+if [ -n "$target" ]; then
+  ln -sf "$target" "$HOME/.claude/redline-statusline.sh"
+  echo "Symlinked: $HOME/.claude/redline-statusline.sh -> $target"
+else
+  echo "ERROR: redline plugin not found in cache. Is it installed?"
+fi
+```
+
+## 2. Copy the wrapper script to a stable location
+
+```bash
+wrapper_src=$(ls -1t "$HOME/.claude/plugins/cache/allixsenos/redline"/*/scripts/redline-wrapper.sh 2>/dev/null | head -1)
+if [ -n "$wrapper_src" ]; then
+  cp "$wrapper_src" "$HOME/.claude/redline-wrapper.sh"
+  chmod +x "$HOME/.claude/redline-wrapper.sh"
+  echo "Installed wrapper: $HOME/.claude/redline-wrapper.sh"
+else
+  echo "ERROR: wrapper script not found in plugin cache."
+fi
+```
+
+## 3. Set the statusLine in settings.json
+
+Read `~/.claude/settings.json`, set `statusLine` to:
+
+```json
+{
+  "type": "command",
+  "command": "bash ~/.claude/redline-wrapper.sh"
+}
+```
+
+Use the Edit tool to update `~/.claude/settings.json`. If a `statusLine` key already exists, replace it. If not, add it.
+
+## 4. Confirm
+
+Tell the user setup is complete and the statusline will appear after the next assistant response. If they want to customize the layout, they can create `~/.claude/statusline-config.json`:
+
+```json
+{
+  "lines": [
+    ["ps1", "git"],
+    ["model", "ctx_bar", "5h_bar", "7d_bar", "cost", "lines"]
+  ]
+}
+```
+
+Available components: `ps1`, `git`, `model`, `ctx_bar`, `ctx_short`, `5h_bar`, `5h_short`, `7d_bar`, `7d_short`, `cost`, `lines`.
