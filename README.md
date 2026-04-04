@@ -1,28 +1,18 @@
-# claude-stuff
+# allixsenos Claude Code plugins
 
-A collection of [Agent Skills](https://docs.anthropic.com/en/docs/claude-code/skills) for Claude Code.
+A collection of plugins and skills for Claude Code.
 
-## Skills
+## Setup
 
-| Skill | Description |
-|-------|-------------|
-| [nano-banana](skills/nano-banana/) | Generate and edit images using Gemini API (Nano Banana models) directly from Claude Code |
-| [openrouter-imagegen](skills/openrouter-imagegen/) | Generate and edit images via OpenRouter's unified API — one key, many models (Nano Banana, GPT-5 Image, FLUX.2, Riverflow, and more) |
-
-## Installation
-
-Each skill has its own README with installation instructions. The general pattern:
-
-```bash
-# Copy the skill folder into your Claude Code skills directory
-cp -r skills/<skill-name> ~/.claude/skills/<skill-name>
+```
+/plugin marketplace add allixsenos/claude-plugins
 ```
 
-## Requirements
+## Plugins
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
-- Each skill may have additional requirements (API keys, tools) — check the skill's README
-
-## License
-
-MIT
+| Plugin | Description | Install |
+|--------|-------------|---------|
+| [git-governor](plugins/git-governor/) | Git governance via PreToolUse hooks — block or prompt on amends, force pushes, protected branches | `/plugin install git-governor@allixsenos` |
+| [redline](plugins/redline/) | Configurable statusline with progress bars, git info, cost tracking | `/plugin install redline@allixsenos` |
+| [nano-banana](plugins/nano-banana/) | Image generation and editing via Gemini API (Nano Banana models) | `/plugin install nano-banana@allixsenos` |
+| [openrouter-imagegen](plugins/openrouter-imagegen/) | Image generation via OpenRouter's unified API with runtime model discovery | `/plugin install openrouter-imagegen@allixsenos` |

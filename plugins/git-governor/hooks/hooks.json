@@ -1,0 +1,29 @@
+{
+  "description": "Block dangerous git operations and enforce file edit governance",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/git-governor.sh",
+            "timeout": 5000,
+            "description": "Git governance check"
+          }
+        ]
+      },
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/git-governor.sh",
+            "timeout": 5000,
+            "description": "Require git repo for file edits"
+          }
+        ]
+      }
+    ]
+  }
+}
