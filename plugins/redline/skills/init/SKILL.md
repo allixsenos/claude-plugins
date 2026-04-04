@@ -50,15 +50,4 @@ Use the Edit tool to update `~/.claude/settings.json`. If a `statusLine` key alr
 
 ## 4. Confirm
 
-Tell the user setup is complete and the statusline will appear after the next assistant response. If they want to customize the layout, they can create `~/.claude/statusline-config.json`:
-
-```json
-{
-  "lines": [
-    ["ps1", "git"],
-    ["model", "ctx_bar", "5h_bar", "7d_bar", "cost", "lines"]
-  ]
-}
-```
-
-Available components: `ps1`, `git`, `model`, `ctx_bar`, `ctx_short`, `5h_bar`, `5h_short`, `7d_bar`, `7d_short`, `cost`, `lines`.
+Tell the user setup is complete and the statusline will appear after the next assistant response. To customize the layout, run `/redline:config`.
