@@ -80,7 +80,7 @@ component_ps1() {
   cwd=$(echo "$input" | jq -r '.workspace.current_dir // empty')
   local user_host="$(whoami)@$(hostname -s)"
   if [ -n "$cwd" ]; then
-    cwd="${cwd/#"$HOME"/\~}"
+    _tilde='~'; cwd="${cwd/#"$HOME"/$_tilde}"
     printf '\033[1;32m%s\033[0m:\033[1;34m%s\033[0m' "$user_host" "$cwd"
   else
     printf '\033[1;32m%s\033[0m' "$user_host"
@@ -119,7 +119,7 @@ component_cwd() {
   local cwd
   cwd=$(echo "$input" | jq -r '.workspace.current_dir // empty')
   [ -z "$cwd" ] && return
-  cwd="${cwd/#"$HOME"/\~}"
+  _tilde='~'; cwd="${cwd/#"$HOME"/$_tilde}"
   printf '\033[1;34m%s\033[0m' "$cwd"
 }
 
