@@ -25,6 +25,11 @@
       "name": "openrouter-imagegen",
       "source": "./plugins/openrouter-imagegen",
       "description": "Generate and edit images using OpenRouter's unified API with runtime model discovery"
+    },
+    {
+      "name": "clockwork",
+      "source": "./plugins/clockwork",
+      "description": "Periodic time injection so Claude knows what day and time it is"
     }
   ]
 }
