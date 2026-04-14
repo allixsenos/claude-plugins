@@ -25,7 +25,9 @@ A `UserPromptSubmit` hook runs a shell script that:
 2. If 10+ minutes have elapsed, injects `Current time: Tuesday, 2026-04-14 11:40 CEST` into the context
 3. If less than 10 minutes, does nothing
 
-The injection uses `claudeOutput` so it appears as context to Claude, not as a visible message to you.
+The injection appears as context to Claude, not as a visible message to you.
+
+![It works](it-works.png)
 
 ## Why 10 minutes?
 
