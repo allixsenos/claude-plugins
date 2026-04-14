@@ -1,8 +1,13 @@
 #!/bin/bash
 # Clockwork — inject current time into Claude's context every 10 minutes.
 # Prevents temporal disorientation in long sessions.
+# Per-session stamp file so multiple sessions each get their own clock.
 
-STAMP_FILE="/tmp/claude-clockwork.stamp"
+INPUT=$(cat)
+SESSION_ID=$(echo "$INPUT" | jq -r '.session_id // empty' 2>/dev/null) || SESSION_ID=""
+SESSION_ID="${SESSION_ID:-no-session-id}"
+
+STAMP_FILE="/tmp/claude-clockwork-${SESSION_ID}.stamp"
 INTERVAL=600 # 10 minutes
 
 NOW=$(date +%s)
