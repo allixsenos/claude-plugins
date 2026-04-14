@@ -1,6 +1,6 @@
 {
   "name": "clockwork",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Periodic time injection so Claude knows what day and time it is",
   "author": {
     "name": "Luka Kladaric",
