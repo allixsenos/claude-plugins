@@ -13,5 +13,6 @@ DIFF=$((NOW - LAST))
 if [ "$DIFF" -ge "$INTERVAL" ]; then
   echo "$NOW" > "$STAMP_FILE"
   TIME=$(date '+%A, %Y-%m-%d %H:%M %Z')
-  echo "{\"hookSpecificOutput\":{\"claudeOutput\":\"Current time: ${TIME}\"}}"
+  echo "Current time: ${TIME} (allixsenos/clockwork)"
 fi
+exit 0
