@@ -4,11 +4,14 @@ Keeps Claude oriented in time during long sessions.
 
 Claude has no internal clock. In conversations that span hours, it loses track of time completely -- guessing 3 AM when it's actually noon, or not knowing what day it is after a context compaction.
 
+![The problem](the-problem.jpg)
+
 Clockwork fixes this by injecting the current day, date, and time into the conversation context. It fires on every message you send, but only injects the time if 10+ minutes have passed since the last injection -- so it stays out of the way during rapid back-and-forth.
 
 ## Install
 
 ```
+/plugin marketplace add allixsenos/claude-plugins
 /plugin install clockwork@allixsenos
 /reload-plugins
 ```
