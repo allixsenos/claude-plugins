@@ -1,0 +1,18 @@
+{
+  "description": "Inject current time into context periodically",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/clockwork.sh",
+            "timeout": 3,
+            "description": "Clockwork time injection"
+          }
+        ]
+      }
+    ]
+  }
+}

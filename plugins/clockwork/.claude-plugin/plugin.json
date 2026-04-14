@@ -1,0 +1,10 @@
+{
+  "name": "clockwork",
+  "version": "1.0.0",
+  "description": "Periodic time injection so Claude knows what day and time it is",
+  "author": {
+    "name": "Luka Kladaric",
+    "url": "https://github.com/allixsenos"
+  },
+  "license": "MIT"
+}
