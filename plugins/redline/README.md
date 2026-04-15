@@ -17,6 +17,7 @@ The init skill creates a version-resilient wrapper and configures your statusLin
 
 - `/redline:init` — one-time setup after install
 - `/redline:config` — interactively change the layout
+- `/redline:changelog` — show recent Claude Code release notes
 
 ## Features
 
@@ -73,5 +74,6 @@ Override config path with the `CLAUDE_STATUSLINE_CONFIG` env var.
 | `7d_short` | 7-day rate limit as colored text in brackets + reset countdown |
 | `cost` | Session cost in yellow (e.g. `$0.42`) |
 | `lines` | Lines added (green) and removed (red) |
+| `update` | Shows bold yellow `↑ X.Y.Z` when a newer Claude Code version is available. Checks npm at most once every 4 hours (cached in `/tmp/redline-claude-version`). Silent when up to date. |
 
 Components can be placed on any line in any order. Omit a component to disable it entirely — no work is done for components not in the config.
