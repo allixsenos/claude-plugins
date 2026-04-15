@@ -61,6 +61,9 @@ Meters (bar = visual bar, short = compact text):
 Stats:
   cost         session cost                  $0.42
   lines        lines changed                 +156 -23
+
+Updates:
+  update       new version available          ↑ 2.2.0
 ```
 
 Note: reset countdowns (like `3h12m`) only appear when usage >= `show_reset_at`.

@@ -231,6 +231,44 @@ component_lines() {
   [ -n "$delta" ] && printf '%b' "$delta"
 }
 
+component_update() {
+  local cache="/tmp/redline-claude-version"
+  local ttl=14400  # 4 hours in seconds
+  local now latest cached_at=0
+
+  now=$(date +%s)
+
+  # Read cache
+  if [ -f "$cache" ]; then
+    cached_at=$(sed -n '1p' "$cache")
+    latest=$(sed -n '2p' "$cache")
+  fi
+
+  # Refresh if stale or empty
+  if [ $((now - cached_at)) -ge $ttl ] || [ -z "$latest" ]; then
+    local fetched
+    fetched=$(npm view @anthropic-ai/claude-code version 2>/dev/null)
+    if [ -n "$fetched" ]; then
+      latest="$fetched"
+      printf '%s\n%s\n' "$now" "$latest" > "$cache"
+    fi
+  fi
+
+  [ -z "$latest" ] && return
+
+  # Get running version
+  local current
+  current=$(claude --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+  [ -z "$current" ] && return
+
+  # Compare: if latest > current, show upgrade prompt
+  local newer
+  newer=$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -1)
+  if [ "$newer" = "$latest" ] && [ "$latest" != "$current" ]; then
+    printf '\033[1;33m↑ claude code %s available\033[0m' "$latest"
+  fi
+}
+
 # --- Render a line from config ---
 
 render_line() {
