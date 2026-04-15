@@ -15,7 +15,7 @@ Interactive configuration for the redline statusline.
 
 Read `~/.claude/statusline-config.json` if it exists. If not, note the defaults:
 - `show_reset_at`: 70
-- `lines`: `[["ps1","git"],["model","ctx_bar","5h_bar","7d_bar","cost","lines"]]`
+- `lines`: `[["ps1","git","update"],["model","ctx_bar","5h_bar","7d_bar","cost","lines"]]`
 
 ## Step 2: Show the dashboard
 
@@ -23,11 +23,11 @@ Present the current layout with a monochrome ASCII preview of what each line loo
 
 ```
 Current layout:
-  Line 1: ps1, git
+  Line 1: ps1, git, update
   Line 2: model, ctx_bar, 5h_bar, 7d_bar, cost, lines
 
 Preview:
-  rmbug@veles:~/dev  main SM
+  rmbug@veles:~/dev  main SM  ↑ claude code 2.2.0 available
   Claude Opus 4.6  ctx [####8%....] 5h [###27%....] 3h12m  7d [#12%......] 5d4h  $0.42  +156 -23
 
 Settings:

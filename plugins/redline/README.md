@@ -41,7 +41,7 @@ Create `~/.claude/statusline-config.json` or use `/redline:config`:
 {
   "show_reset_at": 70,
   "lines": [
-    ["ps1", "git"],
+    ["ps1", "git", "update"],
     ["model", "ctx_short", "5h_short", "7d_short", "cost", "lines"]
   ]
 }

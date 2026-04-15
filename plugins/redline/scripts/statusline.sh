@@ -8,7 +8,7 @@ CONFIG_FILE="${CLAUDE_STATUSLINE_CONFIG:-$HOME/.claude/statusline-config.json}"
 if [ -f "$CONFIG_FILE" ]; then
   config=$(cat "$CONFIG_FILE")
 else
-  config='{"lines":[["ps1","git"],["model","ctx_bar","5h_bar","7d_bar","cost","lines"]]}'
+  config='{"lines":[["ps1","git","update"],["model","ctx_bar","5h_bar","7d_bar","cost","lines"]]}'
 fi
 
 # Config: threshold for showing reset countdown (default 70%)
