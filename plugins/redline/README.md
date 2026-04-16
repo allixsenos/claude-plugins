@@ -8,14 +8,14 @@ Configurable statusline for Claude Code with progress bars, git info, cost track
 /plugin marketplace add allixsenos/claude-plugins
 /plugin install redline@allixsenos
 /reload-plugins
-/redline:init
+/redline:setup
 ```
 
-The init skill creates a version-resilient wrapper and configures your statusLine setting automatically.
+The setup skill creates a version-resilient wrapper and configures your statusLine setting automatically.
 
 ## Skills
 
-- `/redline:init` — one-time setup after install
+- `/redline:setup` — one-time setup after install
 - `/redline:config` — interactively change the layout
 - `/redline:changelog` — show recent Claude Code release notes
 
