@@ -1,8 +1,8 @@
 ---
-name: init
+name: setup
 description: |
   Initial setup for the redline statusline plugin. Use when the user says
-  /redline:init, "set up redline", or "install redline statusline". Creates
+  /redline:setup, "set up redline", or "install redline statusline". Creates
   the wrapper script and statusLine setting. Run once after install.
 ---
 
