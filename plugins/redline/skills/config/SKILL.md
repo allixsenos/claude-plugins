@@ -14,7 +14,8 @@ Interactive configuration for the redline statusline.
 ## Step 1: Show current config
 
 Read `~/.claude/statusline-config.json` if it exists. If not, note the defaults:
-- `show_reset_at`: 70
+- `show_reset_at`: 0
+- `burn_threshold`: 10
 - `lines`: `[["ps1","git","update"],["model","ctx_bar","5h_bar","7d_bar","cost","lines"]]`
 
 ## Step 2: Show the dashboard
@@ -28,10 +29,11 @@ Current layout:
 
 Preview:
   rmbug@veles:~/dev  main SM  ↑ claude code 2.2.0 available
-  Claude Opus 4.6  ctx [####8%....] 5h [###27%....] 3h12m  7d [#12%......] 5d4h  $0.42  +156 -23
+  Claude Opus 4.6  ctx [####8%....] 5h 27% [###|.......] 4h  7d 12% [#|........] 6d  $0.42  +156 -23
 
 Settings:
-  show_reset_at: 70  (show reset countdown when usage >= 70%)
+  show_reset_at: 0   (always show reset countdown)
+  burn_threshold: 10 (flag burn when usage > elapsed + 10%)
 ```
 
 Then list ALL available components grouped by category:
@@ -53,10 +55,14 @@ Model:
 Meters (bar = visual bar, short = compact text):
   ctx_bar      context window bar            ctx [####8%......]
   ctx_short    context window text           [ctx 8%]
-  5h_bar       5h rate limit bar             5h [###27%......] 3h12m
-  5h_short     5h rate limit text            [5h 27%] 3h12m
-  7d_bar       7d rate limit bar             7d [#12%........] 5d4h
-  7d_short     7d rate limit text            [7d 12%] 5d4h
+  5h_bar       5h rate limit bar             5h 27% [##|########] 4h
+  5h_short     5h rate limit text            [5h 27%↑] 4h
+  7d_bar       7d rate limit bar             7d 12% [#|.........] 6d
+  7d_short     7d rate limit text            [7d 12%] 6d
+
+Rate-limit bars include a `|` marker at the elapsed-time position — fill past
+the marker means usage is pulling ahead of the clock. Short variants get a
+bright red `↑` inside the brackets when burning hot (usage > elapsed + burn_threshold).
 
 Stats:
   cost         session cost                  $0.42
@@ -66,7 +72,9 @@ Updates:
   update       new version available          ↑ 2.2.0
 ```
 
-Note: reset countdowns (like `3h12m`) only appear when usage >= `show_reset_at`.
+Note: countdowns show the coarsest nonzero unit, rounded up (e.g. 4h30m → 5h,
+3d15h → 4d). They always appear by default; set `show_reset_at` to a threshold
+(0-100) to hide them at low usage.
 
 ## Step 3: Ask what to change
 
@@ -76,11 +84,11 @@ If the user already said what they want, apply it. Otherwise ask. Common operati
 - Add/remove components
 - Move components between lines
 - Add/remove lines
-- Change `show_reset_at`
+- Change `show_reset_at` or `burn_threshold`
 
 ## Step 4: Write config
 
-Write the updated config to `~/.claude/statusline-config.json`. Always include `show_reset_at` if it differs from the default 70.
+Write the updated config to `~/.claude/statusline-config.json`. Always include `show_reset_at` and `burn_threshold` if they differ from the defaults (0 and 10 respectively).
 
 ## Step 5: Confirm
 
