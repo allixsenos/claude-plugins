@@ -18,6 +18,8 @@ DIFF=$((NOW - LAST))
 if [ "$DIFF" -ge "$INTERVAL" ]; then
   echo "$NOW" > "$STAMP_FILE"
   TIME=$(date '+%A, %Y-%m-%d %H:%M %Z')
-  echo "Current time: ${TIME} (allixsenos/clockwork)"
+  # Tag identifies the source of this injection so the user (and Claude) can
+  # tell where it came from weeks later, without burning extra context tokens.
+  echo "Current time: ${TIME} (clockwork plugin)"
 fi
 exit 0
