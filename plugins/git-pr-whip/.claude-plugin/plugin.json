@@ -1,7 +1,7 @@
 {
   "name": "git-pr-whip",
-  "version": "1.0.0",
-  "description": "PostToolUse hook that injects subtle PR hygiene reminders after git commits — check for closed PRs, post review-feedback recap comments",
+  "version": "1.1.0",
+  "description": "PostToolUse hook that injects subtle PR hygiene reminders after git commit and git push — check for closed PRs, flag scope expansion, post review-feedback recap comments",
   "author": {
     "name": "Luka Kladaric",
     "url": "https://github.com/allixsenos"
