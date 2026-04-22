@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# git-pr-whip — PostToolUse hook that injects PR hygiene reminders after git commits.
+# git-pr-whip — PostToolUse hook that injects PR hygiene reminders after git operations.
 #
-# Fires after any `git commit` (including --amend). Emits `additionalContext` JSON
-# on stdout so Claude Code feeds the reminder into the model's context (invisible
-# to the user). Silent on any non-commit Bash call.
+# Fires after `git commit` (any variant: --amend, -m, --fixup) and after `git push`.
+# Each subcommand gets a different reminder. Emits `additionalContext` JSON on
+# stdout so Claude Code feeds the reminder into the model's context (invisible to
+# the user). Silent on any other Bash call.
 
 set -euo pipefail
 
@@ -39,16 +40,21 @@ SCAN=$(printf '%s' "$SCAN" | sed 's/\$(\([^)]*\))/\1/g' | sed 's/`\([^`]*\)`/\1/
 # Normalize git global flags: "git -C /path commit" -> "git commit"
 SCAN=$(printf '%s' "$SCAN" | perl -pe 's/\bgit\s+(?:(?:-[Cc]|--git-dir|--work-tree)(?:=\S+|\s+\S+)\s+)*/git /g')
 
-# Detect any git commit invocation (plain, --amend, -m, --fixup, etc.)
-if ! printf '%s' "$SCAN" | grep -qE '\bgit\s+commit\b'; then
+# Dispatch on subcommand. `\bgit\s+commit\b` / `\bgit\s+push\b` both require
+# commit/push to be the first word after `git`, so `git stash push` etc. won't
+# false-match. Silent on any other git invocation.
+if printf '%s' "$SCAN" | grep -qE '\bgit\s+commit\b'; then
+  REMINDER="PR hygiene reminder (git-pr-whip plugin):
+If this commit is meant to update an existing PR, before pushing run \`gh pr view --json state,url\` for that branch. If the PR state is MERGED or CLOSED, the branch is stale — pull the latest default branch, create a new branch from it, and open a fresh PR instead of pushing to the old one."
+elif printf '%s' "$SCAN" | grep -qE '\bgit\s+push\b'; then
+  REMINDER="PR hygiene reminder (git-pr-whip plugin):
+1. If this push updates an existing PR, check whether the commits now on the branch have expanded the PR's scope past what its title and body describe (e.g. additional fixes, new features, or refactors added after the PR opened). If so, run \`gh pr edit <num> --title ... --body ...\` so reviewers see the full scope, not just what the PR originally claimed.
+2. If this push includes commits that address PR review feedback from other users or agents, post one recap comment on the PR summarizing which suggestions you accepted vs. dismissed, with a one-line reason for each dismissal — so reviewers don't have to reconstruct it from the diff."
+else
   exit 0
 fi
 
 # --- Emit additionalContext for Claude ---
-
-REMINDER="PR hygiene reminder (git-pr-whip plugin):
-1. If this commit is meant to update an existing PR, before pushing run \`gh pr view --json state,url\` for that branch. If the PR state is MERGED or CLOSED, the branch is stale — pull the latest default branch, create a new branch from it, and open a fresh PR instead of pushing to the old one.
-2. If this commit addresses PR review feedback from other users or agents, post one recap comment on the PR summarizing which suggestions you accepted vs. dismissed, with a one-line reason for each dismissal — so reviewers don't have to reconstruct it from the diff."
 
 jq -n --arg ctx "$REMINDER" '{
   hookSpecificOutput: {
