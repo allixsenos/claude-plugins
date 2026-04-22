@@ -25,6 +25,7 @@ Plugins include hooks that run automatically — they need `/plugin install`.
 | [git-governor](plugins/git-governor/) | Git governance via PreToolUse hooks — block or prompt on amends, force pushes, protected branches | `/plugin install git-governor@allixsenos` |
 | [redline](plugins/redline/) | Configurable statusline with progress bars, git info, cost tracking | `/plugin install redline@allixsenos` |
 | [clockwork](plugins/clockwork/) | Periodic time injection so Claude knows what day and time it is | `/plugin install clockwork@allixsenos` |
+| [git-pr-whip](plugins/git-pr-whip/) | PostToolUse reminders after `git commit` — check if the PR was closed, post review-feedback recaps | `/plugin install git-pr-whip@allixsenos` |
 
 ## Skills
 

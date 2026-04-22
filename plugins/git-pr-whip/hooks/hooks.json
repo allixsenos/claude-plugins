@@ -1,0 +1,18 @@
+{
+  "description": "Inject PR hygiene reminders after git commits",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/git-pr-whip.sh",
+            "timeout": 3,
+            "description": "Git PR whip reminders"
+          }
+        ]
+      }
+    ]
+  }
+}
