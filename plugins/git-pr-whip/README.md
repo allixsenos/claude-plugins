@@ -8,11 +8,13 @@ Claude is great at forgetting three specific things around commit and push time:
 2. **The PR's scope has grown past its title and description.** Claude adds a "while I'm here" fix, then another, and the PR still says what the first commit was about. Reviewers lose trust when they open a PR titled *"fix null session"* and find a logger refactor. (Checked after `git push`.)
 3. **Review feedback Claude addressed never gets acknowledged on the PR itself.** Reviewers left suggestions; Claude accepted some, dismissed others, silently. The PR conversation has no record of what changed and why. (Checked after `git push`.)
 
-This plugin nudges it, quietly.
+It also forgets a fourth thing — that the above reminders can't help when commit and push are chained in one Bash call. So this plugin also **blocks** `git commit && git push` (and friends) before the tool runs, forcing the work into two turns so the reminder has a chance to land. More on that below.
+
+This plugin nudges it, quietly — and occasionally refuses to let Claude skip the nudge.
 
 ## What it prevents
 
-Three failure modes, reconstructed from real sessions (names changed, pacing tightened).
+Four failure modes, reconstructed from real sessions (names changed, pacing tightened). The first three are nudged; the fourth is outright denied.
 
 ### 1. Pushing into a PR that was already merged — nudged after `git commit`
 
@@ -82,6 +84,42 @@ With git-pr-whip, the post-push nudge triggers a single recap comment on the PR:
 > - ✗ #4 split `AuthResolver` into two classes → dismissed; the two halves share six private fields, splitting duplicates them with no win
 > - ✗ #5 tighten the email regex to `^[a-z0-9]` → dismissed; that rejects addresses with `+` aliases which we accept in prod (see #137)
 
+### 4. Chaining commit and push so the reminder can't land — blocked before the tool runs
+
+The reminders above fire *after* the tool call. That's fine when commit and push are two separate calls, but Claude often tries:
+
+```
+> commit the fix and push it
+
+● Bash(git commit -m "fix: null session" && git push)
+```
+
+With both commands in one shell invocation, the commit's post-commit reminder (*"is the PR still open? pull master first?"*) gets generated — but the push already ran. The reminder lands as context for Claude's *next* turn, which is now after the push, when it can't influence anything.
+
+git-pr-whip denies this pattern at `PreToolUse`:
+
+```
+● Bash(git commit -m "fix: null session" && git push)
+  ✗ denied by git-pr-whip: chaining `git commit` with `git push` in a single
+    Bash call is blocked. The post-commit PR-hygiene reminder only lands in
+    context AFTER the tool call finishes — if you've already chained the
+    push, the reminder can't change the outcome. Run them as separate Bash
+    calls: commit first, read the reminder, then decide whether to push.
+
+● Right — splitting them.
+● Bash(git commit -m "fix: null session")
+  ✓ [fix-auth abc1234] fix: null session
+  [reminder arrives: run `gh pr view --json state,url` before pushing]
+
+● Bash(gh pr view --json state)
+  {"state":"OPEN"}
+
+● Bash(git push)
+  ✓ …
+```
+
+Detection covers `&&`, `;`, `||`, `|`, subshells like `(git commit ... && git push)`, line continuations, and `git -C /path commit`. Standalone commits and pushes pass through untouched, and `git stash push` is correctly *not* matched (the regex requires `commit`/`push` to be the first word after `git`).
+
 ## First real catch (five minutes after install)
 
 The three transcripts above are fake. This one is not. I wrote the faux reproduction section, committed it, and pushed — and the plugin caught me on its own README commit, because the user had squash-merged the plugin's own PR ([#19](https://github.com/allixsenos/claude-plugins/pull/19)) while I was still editing. The commit landed on a now-dead branch. Verbatim session:
@@ -129,7 +167,10 @@ Without the nudge after `git commit`, the orphaned commit would have silently st
 
 ## What it does
 
-A `PostToolUse` hook fires after every Bash command. When the command is `git commit` (any variant: `-m`, `--amend`, `--fixup`) or `git push`, it injects an `additionalContext` reminder that Claude sees but you don't.
+Two hooks on the `Bash` tool:
+
+- **`PreToolUse`** (`block-chain.sh`) — denies any command that contains *both* `git commit` and `git push`. No reminder would reach Claude in time to affect the push otherwise.
+- **`PostToolUse`** (`git-pr-whip.sh`) — when the command is `git commit` (any variant: `-m`, `--amend`, `--fixup`) or `git push`, injects an `additionalContext` reminder that Claude sees but you don't.
 
 **After `git commit`:**
 

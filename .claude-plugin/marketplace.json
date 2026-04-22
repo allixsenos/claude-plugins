@@ -34,7 +34,7 @@
     {
       "name": "git-pr-whip",
       "source": "./plugins/git-pr-whip",
-      "description": "PostToolUse hook that injects subtle PR hygiene reminders after git commit and git push — check for closed PRs, flag scope expansion, post review-feedback recap comments"
+      "description": "PR hygiene for Claude Code — subtle post-commit/push reminders (closed PR, scope expansion, review-feedback recap) plus a PreToolUse block on chained commit+push so the reminder can actually influence the push"
     }
   ]
 }

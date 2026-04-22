@@ -1,6 +1,19 @@
 {
-  "description": "Inject PR hygiene reminders after git commits",
+  "description": "Inject PR hygiene reminders after git commits/pushes; block commit+push chaining so the commit reminder can influence the push",
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/block-chain.sh",
+            "timeout": 3,
+            "description": "Block git commit && git push chains"
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Bash",
