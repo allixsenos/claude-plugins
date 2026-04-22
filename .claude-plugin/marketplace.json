@@ -30,6 +30,11 @@
       "name": "clockwork",
       "source": "./plugins/clockwork",
       "description": "Periodic time injection so Claude knows what day and time it is"
+    },
+    {
+      "name": "git-pr-whip",
+      "source": "./plugins/git-pr-whip",
+      "description": "PostToolUse hook that injects subtle PR hygiene reminders after git commits — check for closed PRs, post review-feedback recap comments"
     }
   ]
 }
