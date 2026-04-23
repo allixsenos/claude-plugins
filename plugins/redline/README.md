@@ -79,6 +79,6 @@ Override config path with the `CLAUDE_STATUSLINE_CONFIG` env var.
 | `7d_short` | 7-day rate limit as `[7d NN%]` with `↑` inside when burning hot + countdown |
 | `cost` | Session cost in yellow (e.g. `$0.42`) |
 | `lines` | Lines added (green) and removed (red) |
-| `update` | Shows bold yellow `↑ X.Y.Z` when a newer Claude Code version is available. Checks npm at most once every 4 hours (cached in `/tmp/redline-claude-version`). Silent when up to date. |
+| `update` | Shows bold yellow `↑ claude code A.B.C → X.Y.Z` when the latest on npm is newer than the version running this session. The running version comes from `$CLAUDE_CODE_EXECPATH` — not `claude --version` on PATH — because Claude self-updates in the background, so a long-running session stays on its launch version until you restart it. Silent when current. npm checked at most once every 4 hours (cached in `/tmp/redline-claude-version`). |
 
 Components can be placed on any line in any order. Omit a component to disable it entirely — no work is done for components not in the config.

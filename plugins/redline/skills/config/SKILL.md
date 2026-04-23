@@ -28,7 +28,7 @@ Current layout:
   Line 2: model, ctx_bar, 5h_bar, 7d_bar, cost, lines
 
 Preview:
-  rmbug@veles:~/dev  main SM  ↑ claude code 2.2.0 available
+  rmbug@veles:~/dev  main SM  ↑ claude code 2.1.117 → 2.1.118
   Claude Opus 4.6  ctx [####8%....] 5h 27% [###|.......] 4h  7d 12% [#|........] 6d  $0.42  +156 -23
 
 Settings:
@@ -69,7 +69,9 @@ Stats:
   lines        lines changed                 +156 -23
 
 Updates:
-  update       new version available          ↑ 2.2.0
+  update       session older than latest npm  ↑ 2.1.117 → 2.1.118
+               (compares $CLAUDE_CODE_EXECPATH vs. npm, not `claude` on PATH,
+                so it flags stale sessions even after a background self-update)
 ```
 
 Note: countdowns show the coarsest nonzero unit, rounded up (e.g. 4h30m → 5h,

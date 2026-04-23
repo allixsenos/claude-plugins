@@ -361,16 +361,25 @@ component_update() {
 
   [ -z "$latest" ] && return
 
-  # Get running version
-  local current
-  current=$(claude --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+  # Session version. Must come from CLAUDE_CODE_EXECPATH (the binary that
+  # launched THIS session), NOT `claude --version` on PATH. Claude self-updates
+  # in the background, so the PATH binary is usually newer than the running
+  # session — comparing against it silences the prompt exactly when the user
+  # most needs it (the session is stale and should be restarted to pick up
+  # whatever's on disk). Path format: .../versions/X.Y.Z
+  local current=""
+  if [ -n "$CLAUDE_CODE_EXECPATH" ]; then
+    current=$(basename "$CLAUDE_CODE_EXECPATH" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+  fi
   [ -z "$current" ] && return
 
-  # Compare: if latest > current, show upgrade prompt
+  # If latest > current, show both so the user knows what a session restart
+  # would gain. Intentionally ignores whatever is on disk — the signal is
+  # "restart THIS session", not "run the installer".
   local newer
   newer=$(printf '%s\n%s\n' "$current" "$latest" | sort -V | tail -1)
   if [ "$newer" = "$latest" ] && [ "$latest" != "$current" ]; then
-    printf '\033[1;33m↑ claude code %s available\033[0m' "$latest"
+    printf '\033[1;33m↑ claude code %s → %s\033[0m' "$current" "$latest"
   fi
 }
 
