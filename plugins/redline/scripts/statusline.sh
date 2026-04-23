@@ -361,16 +361,29 @@ component_update() {
 
   [ -z "$latest" ] && return
 
-  # Session version. Must come from CLAUDE_CODE_EXECPATH (the binary that
-  # launched THIS session), NOT `claude --version` on PATH. Claude self-updates
-  # in the background, so the PATH binary is usually newer than the running
-  # session — comparing against it silences the prompt exactly when the user
-  # most needs it (the session is stale and should be restarted to pick up
-  # whatever's on disk). Path format: .../versions/X.Y.Z
-  local current=""
-  if [ -n "$CLAUDE_CODE_EXECPATH" ]; then
-    current=$(basename "$CLAUDE_CODE_EXECPATH" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-  fi
+  # Session version. Claude Code does NOT propagate $CLAUDE_CODE_EXECPATH to
+  # statusline subprocesses (see code.claude.com/docs/en/env-vars.md — only
+  # Bash tool gets the CC-internal env). So we walk up the process tree from
+  # $PPID and read each ancestor's executable path; Claude Code's self-update
+  # layout puts the binary at .../versions/X.Y.Z/claude, so the version falls
+  # out of the path. Linux uses /proc/<pid>/exe; macOS uses lsof.
+  #
+  # Why not just check `claude --version`? Because Claude self-updates in the
+  # background, so PATH almost always points at the newest binary, which
+  # silences the prompt exactly when the user most needs it (the running
+  # session is stale and should be restarted).
+  local current="" pid="$PPID" exe="" depth
+  for depth in 1 2 3 4 5; do
+    if [ -r "/proc/$pid/exe" ]; then
+      exe=$(readlink "/proc/$pid/exe" 2>/dev/null)
+    else
+      exe=$(lsof -a -p "$pid" -d txt 2>/dev/null | awk 'NR>1 {print $NF; exit}')
+    fi
+    current=$(printf '%s' "$exe" | grep -oE 'versions/[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d/ -f2)
+    [ -n "$current" ] && break
+    pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+    { [ -z "$pid" ] || [ "$pid" = "0" ] || [ "$pid" = "1" ]; } && break
+  done
   [ -z "$current" ] && return
 
   # If latest > current, show both so the user knows what a session restart

@@ -70,8 +70,9 @@ Stats:
 
 Updates:
   update       session older than latest npm  ↑ 2.1.117 → 2.1.118
-               (compares $CLAUDE_CODE_EXECPATH vs. npm, not `claude` on PATH,
-                so it flags stale sessions even after a background self-update)
+               (reads the session's running version from the statusline's
+                parent process, not `claude` on PATH, so it flags stale
+                sessions even after a background self-update)
 ```
 
 Note: countdowns show the coarsest nonzero unit, rounded up (e.g. 4h30m → 5h,
