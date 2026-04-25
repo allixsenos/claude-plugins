@@ -1,8 +1,8 @@
 ---
-name: config
+name: configure
 description: |
   Configure the redline statusline layout and settings. Use when the user says
-  /redline:config, "configure redline", "change statusline layout",
+  /redline:configure, "configure redline", "change statusline layout",
   "redline components", or wants to reorder, add, or remove statusline
   components, or change settings like show_reset_at.
 ---

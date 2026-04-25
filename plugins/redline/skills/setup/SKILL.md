@@ -38,4 +38,4 @@ Use the Edit tool to update `~/.claude/settings.json`. If a `statusLine` key alr
 
 ## 3. Confirm
 
-Tell the user setup is complete and the statusline will appear after the next assistant response. To customize the layout, run `/redline:config`.
+Tell the user setup is complete and the statusline will appear after the next assistant response. To customize the layout, run `/redline:configure`.
