@@ -71,7 +71,7 @@ Override config path with the `CLAUDE_STATUSLINE_CONFIG` env var.
 | `cwd` | Bold blue working directory |
 | `git` | Yellow branch name + red status flags |
 | `model` | Cyan model display name |
-| `ctx_bar` | Context window usage as a 10-step progress bar |
+| `ctx_bar` | Context window usage as `ctx NN% [bar]` 10-step progress bar. When `CLAUDE_CODE_AUTO_COMPACT_WINDOW` is set below the model's full window, cells past the cap render as `✘` so unreachable capacity is visible at a glance. |
 | `ctx_short` | Context window usage as colored text in brackets |
 | `5h_bar` | 5-hour rate limit: `5h NN% [bar\|with\|marker] countdown`. `\|` shows elapsed-time position |
 | `5h_short` | 5-hour rate limit as `[5h NN%]` with `↑` inside when burning hot + countdown |

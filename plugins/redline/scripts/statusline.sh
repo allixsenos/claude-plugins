@@ -26,63 +26,38 @@ burn_threshold=$(echo "$config" | jq -r '.burn_threshold // 10')
 WINDOW_5H_SECS=18000
 WINDOW_7D_SECS=604800
 
-# Helper: render a 10-step progress bar with percentage inside
+# Helper: render a 10-step progress bar with percentage outside.
+# Optional 3rd arg `cap_cells` (0..width) marks the rightmost cells as unusable
+# (rendered with ✘) — used by ctx_bar to show the auto-compact ceiling.
 make_bar() {
   local label="$1"
   local pct_raw="$2"
+  local cap_cells="${3:-10}"
   local pct_int=$(printf '%.0f' "$pct_raw")
   local filled=$(echo "$pct_raw" | awk '{n=int($1/10+0.5); if(n>10) n=10; if(n<0) n=0; print n}')
-  local text="${pct_int}%"
-  local text_len=${#text}
   local width=10
-  local text_start
-
-  if [ "$filled" -eq 0 ]; then
-    text_start=0
-  else
-    text_start=$((filled + 1))
-  fi
-
-  if [ $((text_start + text_len)) -gt "$width" ]; then
-    text_start=$((filled - text_len - 1))
-    [ "$text_start" -lt 0 ] && text_start=0
-  fi
-
-  local text_end=$((text_start + text_len))
   local fill_color
   fill_color=$(echo "$pct_raw" | awk '{if($1>=80) print "\033[31m"; else if($1>=60) print "\033[33m"; else print "\033[32m"}')
   local dim='\033[37m'
   local reset='\033[0m'
 
-  local bar=""
-  local i
+  local bar="" i ch
   for ((i=0; i<width; i++)); do
-    local ch
-    if [ "$i" -ge "$text_start" ] && [ "$i" -lt "$text_end" ]; then
-      ch="${text:$((i - text_start)):1}"
+    if [ "$i" -ge "$cap_cells" ]; then
+      ch="✘"
     elif [ "$i" -lt "$filled" ]; then
       ch="█"
     else
       ch="░"
     fi
-    local is_text=0
-    [ "$i" -ge "$text_start" ] && [ "$i" -lt "$text_end" ] && is_text=1
     if [ "$i" -lt "$filled" ]; then
-      if [ "$is_text" -eq 1 ]; then
-        bar="${bar}\033[48;5;236;37m${ch}${reset}"
-      else
-        bar="${bar}${fill_color}${ch}${reset}"
-      fi
+      bar="${bar}${fill_color}${ch}${reset}"
     else
-      if [ "$is_text" -eq 1 ]; then
-        bar="${bar}\033[48;5;236;37m${ch}${reset}"
-      else
-        bar="${bar}${dim}${ch}${reset}"
-      fi
+      bar="${bar}${dim}${ch}${reset}"
     fi
   done
 
-  printf "%s [%b]" "$label" "$bar"
+  printf "%s %2d%% [%b]" "$label" "$pct_int" "$bar"
 }
 
 # --- Component functions (only called if in config) ---
@@ -275,7 +250,17 @@ component_ctx_bar() {
   local pct
   pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
   [ -z "$pct" ] && return
-  make_bar "ctx" "$pct"
+  # If the user has capped auto-compact below the model's full window via
+  # CLAUDE_CODE_AUTO_COMPACT_WINDOW, mark the unreachable cells with ✘.
+  # The JSON's used_percentage is always reported against the model's full
+  # window (not the cap), so we have to compute the cap geometry ourselves.
+  local full cap cap_cells=10
+  full=$(echo "$input" | jq -r '.context_window.context_window_size // empty')
+  cap="$CLAUDE_CODE_AUTO_COMPACT_WINDOW"
+  if [[ "$cap" =~ ^[0-9]+$ ]] && [[ "$full" =~ ^[0-9]+$ ]] && [ "$cap" -gt 0 ] && [ "$cap" -lt "$full" ]; then
+    cap_cells=$((cap * 10 / full))
+  fi
+  make_bar "ctx" "$pct" "$cap_cells"
 }
 
 component_ctx_short() {
