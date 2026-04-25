@@ -16,7 +16,7 @@ The setup skill creates a version-resilient wrapper and configures your statusLi
 ## Skills
 
 - `/redline:setup` — one-time setup after install
-- `/redline:config` — interactively change the layout
+- `/redline:configure` — interactively change the layout
 - `/redline:changelog` — show recent Claude Code release notes
 
 ## Features
@@ -38,7 +38,7 @@ The setup skill creates a version-resilient wrapper and configures your statusLi
 
 ## Configuration
 
-Create `~/.claude/statusline-config.json` or use `/redline:config`:
+Create `~/.claude/statusline-config.json` or use `/redline:configure`:
 
 ```json
 {
