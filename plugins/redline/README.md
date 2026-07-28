@@ -2,6 +2,12 @@
 
 Configurable statusline for Claude Code with progress bars, git info, cost tracking, and PS1-style prompt.
 
+## Requirements
+
+`jq` — every component reads its data from the statusline JSON with it. Install
+it with `apt install jq`, `brew install jq`, or your platform equivalent. If it
+is missing the statusline says so instead of rendering blank.
+
 ## Install
 
 ```

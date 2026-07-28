@@ -1,6 +1,6 @@
 {
   "name": "redline",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Configurable statusline with progress bars, git info, cost tracking, and PS1-style prompt",
   "author": {
     "name": "Luka Kladarić",
