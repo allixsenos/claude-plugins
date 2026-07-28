@@ -2,6 +2,15 @@
 # Claude Code status line script
 input=$(cat)
 
+# Every component reads its data with jq, so without it the script would emit
+# nothing at all and Claude Code would fall back to its own minimal statusline —
+# a silent failure that looks like the plugin was never installed. Say so
+# instead.
+if ! command -v jq > /dev/null 2>&1; then
+  printf '\033[1;31mredline: jq not found\033[0m \033[90m— install it (apt install jq / brew install jq)\033[0m'
+  exit 0
+fi
+
 CONFIG_FILE="${CLAUDE_STATUSLINE_CONFIG:-$HOME/.claude/statusline-config.json}"
 
 # Default config if no file exists
